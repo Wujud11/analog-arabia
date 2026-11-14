@@ -1,9 +1,13 @@
 # Analog Arabia: a mission-fit atlas of Mars and Moon test sites in the Arabian Peninsula
 
-**NASA Space Apps Challenge 2026** · Challenge: Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars · Saudi Arabia
+**NASA Space Apps Challenge 2026** · Team Red Harra (Riyadh) · Challenge: Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars · Saudi Arabia
 
 ## Summary
 NASA mostly tests rovers, instruments and crews at a few famous analog sites. The Arabian Peninsula has sites that fit specific tests at least as well, yet they rarely appear on analog shortlists. Analog Arabia lets a user pick a mission type (rover test, habitat trial, astrobiology, orbital instrument, unexplored) and ranks eight candidate sites by fit, next to three famous analogs (Atacama, Devon Island, Kilauea) rated on the same criteria. The Arabian sites lead on habitat, orbital-instrument and rover tests; Atacama leads on astrobiology. Each site card shows sourced facts, its Mars or Moon twin, field constraints, live NASA satellite imagery, and NASA POWER climate.
+
+## Demo
+- **Live atlas:** https://wujud11.github.io/analog-arabia/
+- **Pitch deck (7 slides, PDF):** [Analog-Arabia-pitch.pdf](Analog-Arabia-pitch.pdf)
 
 ## How to run it
 Open `index.html` in any modern browser. It needs no build step, server or API key.
@@ -37,7 +41,12 @@ Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100 over nine criteria, wi
 Coordinates come from the Smithsonian Global Volcanism Program, published papers and NASA pages.
 
 ## Use of AI
-The project was built by one participant directing AI agents (Claude, by Anthropic): a research agent, a build agent, a writing agent, and an independent "judge" agent that fact-checked the work. The participant chose the challenge and the regional angle and made the final decisions. No AI-generated images are used.
+The project was built by one participant directing AI agents (Claude, by Anthropic): Nova (research), Titan (build), Comet (writing) and Eclipse, an independent "judge" agent that fact-checked the work. The participant chose the challenge and the regional angle and made the final decisions. No AI-generated images are used.
 
-## Team
-- (Your name): Team Owner
+## Team Red Harra
+- **Wujud Alshahrani** (Riyadh local event; from Bisha): Team Owner, project lead and final decisions
+- AI agents (Claude, by Anthropic), disclosed under Use of AI:
+  - **Nova**: research and sources
+  - **Titan**: build
+  - **Eclipse**: independent fact-check and review
+  - **Comet**: story, project text and pitch
