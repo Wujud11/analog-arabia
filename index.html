@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analog Arabia Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: field-survey plate, precise and quietly exciting
+   IDEA: a geological survey sheet that doubles as a mission-planning console
+   PICTURE: the peninsula as a basalt plate, sites glowing by mission fit
+   COLOUR and TYPE: basalt black, comendite white, Mars orange accent; Archivo + Plex Arabic
+   LAYOUT: title band, map + live ranking, site dossier, method, footer */
+:root{color-scheme:light dark;
+--bg:light-dark(#f4f1ea,#141312);--ink:light-dark(#191816,#eeeae2);--mute:light-dark(#5d5a54,#a9a49a);
+--plate:light-dark(#2a2826,#232120);--land:light-dark(#3a3734,#34312e);--line:light-dark(#d9d3c6,#2f2c29);
+--card:light-dark(#ffffff,#1c1b19);--acc:#e2561d;--acc2:light-dark(#b8410f,#ff7a42);--white:#f2efe8}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+.ar{font-family:"IBM Plex Sans Arabic",sans-serif}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:clamp(32px,4.6vw,52px);line-height:1.05;margin:0 0 14px;text-wrap:balance;font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(24px,2.6vw,32px);line-height:1.1;margin:0 0 12px;text-wrap:balance}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:0 0 12px;max-width:68ch}
+.lede{font-size:17px;color:var(--mute)}
+a{color:var(--acc2)}
+.top{background:var(--plate);color:var(--white)}
+.top .lede{color:#c9c3b8}
+.top a{color:#ff9a6b}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:22px}
+.fig{position:relative;min-height:380px;aspect-ratio:520/430;background:#1d1c1a;border-radius:10px;overflow:hidden}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.legend{font-size:13px;color:#b9b3a8;margin-top:8px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+button{font:inherit;cursor:pointer}
+.chip{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid #57524c;background:transparent;color:var(--white);font-size:15px}
+.chip[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip:focus-visible,.row:focus-visible,.sl input:focus-visible{outline:3px solid #ffb38f;outline-offset:2px}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.row{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) 52px;gap:10px;align-items:center;text-align:left;padding:10px 12px;min-height:52px;border-radius:8px;border:1px solid #3d3a36;background:#1f1e1c;color:var(--white)}
+.row[aria-current=true]{border-color:var(--acc);background:#2b201b}
+.row.ref{background:transparent;border-style:dashed;color:#cfc9be}.row.ref .bar i{background:#8d877d}
+.vs{margin:0 0 12px;font-size:15px;color:#e6e0d6;background:#2b201b;border-left:3px solid var(--acc);padding:10px 12px;border-radius:6px}
+.row .n{color:#9d978c;font-size:14px}
+.row .nm{font-weight:600;line-height:1.2}
+.row .nm small{display:block;font-weight:400;color:#a9a39a;font-size:13px}
+.row .sc{text-align:right;font-weight:800;font-size:18px;font-variant-numeric:tabular-nums}
+.bar{grid-column:2/4;height:4px;background:#34302c;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .4s}
+details{margin-top:14px;color:#cfc9be}
+summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600}
+.sl{display:grid;grid-template-columns:minmax(0,1fr) 120px 22px;gap:8px;align-items:center;font-size:14px;margin:4px 0}
+.sl input{width:100%;accent-color:var(--acc)}
+.dos{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px}
+.tag{display:inline-block;font-size:13px;padding:2px 10px;border-radius:999px;background:var(--acc);color:#fff;margin-bottom:10px}
+.twin{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:18px}
+.twin .vs{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;align-items:center;margin:8px 0 14px}
+.twin .vs div{background:var(--bg);border-radius:8px;padding:10px;font-size:15px;line-height:1.35}
+.twin .vs span{text-align:center;color:var(--acc2);font-weight:800}
+ul.facts{padding-left:18px;margin:0 0 14px}ul.facts li{margin:4px 0}
+.meters{display:grid;gap:6px;margin-top:6px}
+.m{display:grid;grid-template-columns:150px minmax(0,1fr) 22px;gap:8px;align-items:center;font-size:14px}
+.m b{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.m b i{display:block;height:100%;background:var(--acc)}
+.m em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+.src{font-size:14px;color:var(--mute)}.src li{margin:3px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cols div{border-top:2px solid var(--ink);padding-top:12px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600}
+.note{font-size:13px;color:var(--mute)}
+.nasa{margin:6px 0 18px;border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--card)}
+.nasa .imgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0}
+.nasa figure{margin:0}.nasa img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#2a2826;display:block}
+.nasa figcaption{font-size:13px;color:var(--mute);margin-top:4px}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.kv div{background:var(--bg);border-radius:8px;padding:8px}.kv b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.kv span{font-size:13px;color:var(--mute)}
+@media(max-width:600px){.kv{grid-template-columns:repeat(2,minmax(0,1fr))}}
+footer{border-top:1px solid var(--line)}
+@media(max-width:860px){.grid,.dos{grid-template-columns:minmax(0,1fr)}.cols{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);font-weight:600;flex:none}.m{grid-template-columns:118px minmax(0,1fr) 20px}.sl{grid-template-columns:minmax(0,1fr) 90px 20px}.fig{min-height:300px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@keyframes pulse{0%{r:var(--r0);opacity:.7}100%{r:calc(var(--r0) + 14px);opacity:0}}
+.halo{animation:pulse 1.8s ease-out infinite}
+</style>
+</head>
+<body>
+<header class="band top">
+<div class="wrap">
+<h1>Arabia holds Mars and Moon test sites the usual analog list overlooks</h1>
+<p class="lede" style="margin-top:-4px">NASA Space Apps 2026 · Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars</p>
+<p class="lede">NASA's go-to analogs are Atacama, Devon Island and Hawaii. The Arabian Peninsula has young basalt fields, a 1.5 km lava tube, a young iron-meteorite crater field in the Empty Quarter, and a dike intrusion that InSAR recorded in 2009. Pick a mission and the atlas ranks which site to test it at. <span class="ar">أطلس النظائر العربية للمريخ والقمر</span></p>
+<div class="grid">
+<div>
+<div class="fig" id="map" role="img" aria-label="Stylised map of the Arabian Peninsula with candidate analog sites sized by mission fit"></div>
+<p class="legend">Stylised outline, not for navigation. Dot size and glow show the fit for the chosen mission. ≈ means approximate coordinates.</p>
+</div>
+<div>
+<div class="presets" id="presets" role="group" aria-label="Mission type"></div>
+<p class="vs" id="vs"></p><ol class="rank" id="rank"></ol><p class="legend">Grey rows are famous analogs (Atacama, Devon Island, Hawaii), rated on the same criteria for comparison.</p>
+<details>
+<summary>Tune the weights yourself</summary>
+<div id="sliders"></div>
+</details>
+</div>
+</div>
+</div>
+</header>
+
+<section class="band" id="dossier" aria-live="polite"><div class="wrap" id="dosw"></div></section>
+
+<section class="band">
+<div class="wrap">
+<h2>Measured by NASA: how Mars-dry is each site?</h2>
+<p>Climate at every site, pulled live from the NASA POWER API (long-term climatology from satellite and reanalysis data). Lower rainfall and higher sun mean conditions closer to the dry, harsh surface of Mars.</p>
+<table class="stack"><thead><tr><th>Site</th><th>Rain (mm/yr)</th><th>Hottest-month max (°C)</th><th>Sun (kWh/m²/day)</th><th>Wind (m/s)</th><th>Surface temp, hottest month (°C)</th><th>Climate score (0–5)</th></tr></thead><tbody id="pw"></tbody></table>
+<p class="note" id="pwnote" style="margin-top:10px">Loading NASA POWER data…</p>
+</div>
+</section>
+<section class="band" style="background:var(--card)">
+<div class="wrap">
+<h2>Methodology: weighted multi-criteria decision analysis (MCDA)</h2>
+<p>The fit score is a weighted-sum MCDA. Each site is scored 0 to 5 on nine criteria, each mission is a set of weights, and Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100.</p>
+<p><b>Measured from NASA data (live):</b> the Mars-like climate criterion is computed for every site from the NASA POWER climatology API (free, no key) as 0.7 × dryness + 0.3 × sunlight, where dryness = 5 × (1 − annual rain ÷ 250 mm) and sunlight = 5 × (annual solar radiation − 4) ÷ 3.5 kWh/m²/day, both clipped to 0–5. NASA POWER also supplies surface skin temperature, air temperature and wind on every site card.</p>
+<p><b>From the scientific literature:</b> the other eight criteria are rated from the sources cited on each site card. They are expert judgements and are labelled that way.</p>
+<p><b>Next measured criteria (not yet in the score):</b> terrain roughness from SRTM/NASADEM and surface minerals from EMIT, which need Earthdata downloads we could not process in the hackathon window.</p>
+<p><b>Moon and Mars side:</b> every Earth site is paired with a named target on the Moon or Mars, with its coordinates, the NASA mission that studied it, and a tile from NASA Moon Trek (LRO WAC mosaic) or Mars Trek (Viking colour mosaic). No Arabian site reproduces the lunar south pole's permanent cold and shadow. They match lunar lava tubes and mare basalt instead, which are candidate places for a sheltered base.</p>
+<p>Coordinates come from the Smithsonian Global Volcanism Program, published papers and NASA pages. Each card shows what its coordinate marks.</p>
+<table class="stack">
+<thead><tr><th>Criterion</th><th>What it asks</th><th>NASA data that measures it</th></tr></thead>
+<tbody id="crit"></tbody>
+</table>
+<p class="note" style="margin-top:12px">If NASA POWER cannot be reached, the climate criterion is left out of the score rather than guessed.</p>
+</div>
+</section>
+
+<section class="band">
+<div class="wrap cols">
+<div><h3>Why this matters</h3><p>Analog testing is expensive and concentrated in a handful of famous sites. A ranked, evidence-linked shortlist lets agencies and universities in the region find a site that matches the test, not the reputation.</p></div>
+<div><h3>Who uses it</h3><p>Rover and instrument teams choosing test terrain. Researchers planning habitat trials in lava tubes. Students and teachers who want to see Mars from the Hejaz.</p></div>
+<div><h3>What comes next</h3><p>Automate the ratings from NASA data, add the other harrats (there are 15), and let field teams log test results back to each site.</p></div>
+</div>
+</section>
+
+<footer class="band"><div class="wrap note">Built for the 2026 NASA Space Apps Challenge, The Next Frontier. Site facts are drawn from NASA Earth Observatory, peer-reviewed papers and reference works linked on each card. This project does not imply NASA endorsement.</div></footer>
+
+<script>
+{
+const C=[
+ {k:'mars',l:'Mars likeness',q:'Do landforms and rocks match a Martian target?',d:'Landsat / ASTER imagery, MOLA & HiRISE for the Mars side'},
+ {k:'moon',l:'Moon likeness',q:'Does it match lunar terrain or geology?',d:'LRO LROC and Diviner for the Moon side'},
+ {k:'rover',l:'Rover terrain',q:'Is it rough, rocky or sandy enough to stress a rover?',d:'NASADEM / SRTM slope and roughness'},
+ {k:'shelter',l:'Shelter & habitat',q:'Is there natural cover such as a lava tube?',d:'ICESat-2 / GEDI profiles, field surveys'},
+ {k:'astro',l:'Past water & life',q:'Does it preserve signs of past water?',d:'ASTER emissivity, EMIT minerals, GRACE'},
+ {k:'calib',l:'Orbital calibration',q:'Is it stable and clear for testing orbital instruments?',d:'NISAR / Sentinel-1 InSAR coherence, MODIS clouds'},
+ {k:'access',l:'Access',q:'How easy is it to bring a team and equipment?',d:'Roads, distance to cities (ancillary)'},
+ {k:'novel',l:'Novelty',q:'How little has it been used as a space analog?',d:'Literature count (NASA ADS)'},
+ {k:'clim',l:'Mars-like climate (measured)',q:'How dry and sunny is it? Computed live: 0.7 × dryness + 0.3 × sunlight',d:'NASA POWER: precipitation (PRECTOTCORR) and solar radiation (ALLSKY_SFC_SW_DWN)',m:1}
+];
+const P=[
+ {id:'rover',l:'Rover test',w:{mars:2,moon:1,rover:3,access:1,clim:1}},
+ {id:'habitat',l:'Habitat trial',w:{shelter:3,moon:2,mars:1,access:1}},
+ {id:'astro',l:'Astrobiology',w:{astro:3,mars:2,clim:2}},
+ {id:'calib',l:'Orbital instrument',w:{calib:3,mars:1,access:1,clim:1}},
+ {id:'novel',l:'Unexplored',w:{novel:3,mars:1,moon:1}}
+];
+const S=[
+ {id:'khaybar',tg:{b:'Mars',n:'Arsia Mons, Tharsis volcanic province',lat:-8.26,lon:-120.09,why:'Basaltic shield volcanoes and lava plains',src:['NASA Mars Trek','https://trek.nasa.gov/mars/']},fc:'Remote; sharp lava shreds tyres, so 4x4 and a guide are needed. Summer highs often pass 40 °C; plan for Nov–Mar.',n:'Harrat Khaybar',ar:'حرة خيبر',lat:25.72,lon:39.94,ap:false,cs:'Jabal Abyad summit',t:'Volcanic field',
+  f:['A 14,000 km² lava field with eight lava flows younger than 1,500 years; last eruption in the 7th century.','Black basalt beside white silica-rich volcanoes: the Jabal Abyad dome (over 2,090 m) and the Jabal Bayda tuff cone.','Its tuff cones formed when magma met water, so the region was once much wetter.'],
+  e:'Harrat Khaybar field',m:'Volcanic plains of Tharsis and Elysium, and suspected Martian tuff cones',
+  tests:'Rover traverses over sharp aa and smooth pahoehoe lava; EVA geology training on contrasting rock types.',
+  s:{mars:4,moon:3,rover:5,shelter:3,astro:3,calib:3,access:3,novel:4},
+  r:[['NASA Earth Observatory: White and Black Volcanoes of Saudi Arabia (Landsat 9)','https://earthobservatory.nasa.gov/images/152839/white-and-black-volcanoes-of-saudi-arabia'],['NASA Earth Observatory: Harrat Khaybar Volcanic Field (ISS016-E-34524)','https://earthobservatory.nasa.gov/images/8650/harrat-khaybar-volcanic-field']]},
+ {id:'jirsan',tg:{b:'Moon',n:'Mare Tranquillitatis pit (lava-tube skylight)',lat:8.34,lon:33.22,why:'A pit imaged by LRO, a candidate entrance to a lava tube that could shelter a base',src:['NASA Lunar Reconnaissance Orbiter','https://science.nasa.gov/mission/lro/']},fc:'Off-road access from the Khaybar–Madinah road; bring lighting and helmets. Archaeological site, so permits from the heritage authority.',n:'Umm Jirsan lava tube',ar:'كهف أم جرسان',lat:25.589,lon:39.757,ap:false,cs:'cave entrance',t:'Lava tube',
+  f:['About 1,481 m of passages, 8 to 12 m high and up to 45 m wide.','Inside Harrat Khaybar, about 125 km north of Madinah.','People used it as shelter for thousands of years, from the Neolithic onward.'],
+  e:'Umm Jirsan cave',m:'Lava-tube skylights on the Moon and on Mars, candidate sites for crewed habitats',
+  tests:'Radiation-shelter and habitat layouts, cave navigation without GPS, comms relay through a skylight.',
+  s:{mars:4,moon:4,rover:2,shelter:5,astro:3,calib:1,access:4,novel:5},
+  r:[['Stewart et al. 2024, PLOS ONE: Umm Jirsan archaeology','https://doi.org/10.1371/journal.pone.0299292'],['Wikipedia: Harrat Khaybar, Umm Jirsan section','https://en.wikipedia.org/wiki/Harrat_Khaybar']]},
+ {id:'wahbah',tg:{b:'Mars',n:'Meridiani Planum (Opportunity landing region)',lat:-1.95,lon:-5.53,why:'Salty sediments that formed in water',src:['NASA Opportunity rover','https://science.nasa.gov/mission/mer-opportunity/']},fc:'Paved road reaches the rim, about 4 h from Jeddah; descent is on foot. Salt floor is blinding at midday.',n:'Al Wahbah maar',ar:'فوهة الوعبة',lat:22.906,lon:41.138,ap:false,cs:'crater centre',t:'Maar crater',
+  f:['A steam-explosion crater about 2.3 km across and 250 m deep, formed about 1.15 million years ago.','Its floor is a white evaporite crust in a hyperarid climate.','Listed among the IUGS top 100 geological heritage sites in 2024.'],
+  e:'Al Wahbah crater floor',m:'Hydrovolcanic craters and chloride and salt deposits on Mars',
+  tests:'Steep-wall descent for rovers and crews; sampling evaporites, where traces of past water and life concentrate.',
+  s:{mars:4,moon:2,rover:3,shelter:1,astro:4,calib:3,access:4,novel:4},
+  r:[['IUGS Geoheritage: The Pleistocene Al Wahbah dry maar crater','https://iugs-geoheritage.org/?p=10739'],['Arab News: Al-Wahbah among top geological wonders','https://www.arabnews.com/node/2569691/saudi-arabia']]},
+ {id:'wabar',tg:{b:'Moon',n:'Mare Tranquillitatis, Apollo 11 site',lat:0.67,lon:23.47,why:'Small fresh craters; impact glass beads in the returned regolith',src:['NASA Apollo 11','https://www.nasa.gov/mission/apollo-11/']},fc:'Deep in the dunes with no landmarks; multi-day 4x4 expedition with desert support. Winter only.',n:'Wabar impact craters',ar:'فوهات وبار',lat:21.5025,lon:50.4742,ap:false,cs:'crater field',t:'Impact craters',
+  f:['Craters of about 116 m, 64 m and 11 m, made by an iron meteorite roughly 290 years ago (luminescence dating).','They sit in the middle of the largest continuous sand sea on Earth.','Impact glass and shocked "instant rock" are scattered around them.'],
+  e:'Wabar craters',m:'Small fresh craters among Martian dunes, and impact glass as a sampling target',
+  tests:'Finding and sampling impact products, and watching dunes bury craters (the craters have visibly filled in since 1932).',
+  s:{mars:4,moon:4,rover:4,shelter:0,astro:2,calib:3,access:1,novel:3},
+  r:[['Wynn & Shoemaker 1997, Secrets of the Wabar craters, Sky & Telescope (USGS record)','https://pubs.usgs.gov/publication/70111417'],['Wynn & Shoemaker 1998, The Day the Sands Caught Fire, Scientific American','https://doi.org/10.1038/scientificamerican1198-64'],['Prescott et al. 2004, luminescence dating of Wabar (USGS record)','https://pubs.usgs.gov/publication/70027161']]},
+ {id:'lunayyir',tg:{b:'Mars',n:'Cerberus Fossae, Elysium Planitia',lat:10,lon:161,ap:1,why:'Young fissures where InSight located marsquakes',src:['NASA InSight lander','https://science.nasa.gov/mission/insight/']},fc:'Seismically active area (2009 swarm); coordinate with the Saudi Geological Survey. Lies between Yanbu and Al Ula.',n:'Harrat Lunayyir',ar:'حرة لنير',lat:25.17,lon:37.75,ap:false,cs:'Smithsonian GVP volcano point',t:'Dike & graben',
+  f:['In 2009 a dike about 10 km long rose to within about 1 km of the surface without erupting.','InSAR showed more than 1 m of east-west extension and a new graben; 30,000 to 40,000 people were evacuated.','The bare, stable desert surface gave unusually clear radar interferograms.'],
+  e:'Lunayyir 2009 graben',m:'Dike-fed grabens on Mars such as the Tharsis radial fractures',
+  tests:'Ground truth for NISAR and other radar missions, and practice reading tectonic cracks from orbit.',
+  s:{mars:4,moon:2,rover:3,shelter:1,astro:1,calib:5,access:3,novel:4},
+  r:[['Xu et al. 2016, JGR Solid Earth: graben formation and dike arrest','https://doi.org/10.1002/2015JB012505'],['Jónsson et al., EGU 2010: InSAR of the Lunayyir dyke','https://meetingorganizer.copernicus.org/EGU2010/EGU2010-7715.pdf'],['Pallister et al. 2010, Nature Geoscience (USGS record)','https://pubs.usgs.gov/publication/70036340']]},
+ {id:'rahat',tg:{b:'Moon',n:'Mare Imbrium lava flows',lat:32.8,lon:-15.6,ap:1,why:'Young basalt flows across a lunar mare',src:['NASA Lunar Reconnaissance Orbiter','https://science.nasa.gov/mission/lro/']},fc:'Next to Madinah, so the cheapest logistics on the list; check access rules for sites close to the city.',n:'Harrat Rahat',ar:'حرة رهط',lat:23.08,lon:39.78,ap:false,cs:'Smithsonian GVP volcano point',t:'Young lava flows',
+  f:['About 20,000 km², the largest of the 15 Cenozoic harrats.','Its 1256 AD eruption sent lava toward Al Madinah.','An ISS photo from 2024 shows a lava field southeast of Medina, likely part of Rahat (iss071e235550).'],
+  e:'Harrat Rahat flows',m:'Young lava flows of Elysium Planitia and lunar mare basalt plains',
+  tests:'Long traverses on recent lava near a major city, which keeps logistics cheap.',
+  s:{mars:3,moon:3,rover:4,shelter:2,astro:2,calib:3,access:5,novel:3},
+  r:[['USGS: Geologic map of northern Harrat Rahat','https://www.usgs.gov/maps/geologic-map-northern-harrat-rahat-volcanic-field-kingdom-saudi-arabia'],['NASA: Lava field southeast of Medina from the ISS','https://www.nasa.gov/?p=680461'],['Jónsson, ERI Tokyo seminar: 2009 crisis and the harrats','https://www.eri.u-tokyo.ac.jp/en/?p=3690']]},
+ {id:'jubbah',tg:{b:'Mars',n:'Jezero crater',lat:18.38,lon:77.58,why:'An ancient lake and delta that Perseverance is sampling',src:['NASA Perseverance rover','https://science.nasa.gov/mission/mars-2020-perseverance/']},fc:'Jubbah town sits in the basin; UNESCO rock-art site nearby, so permits apply. Hail is about 100 km away.',n:'Jubbah paleolake',ar:'بحيرة جبة القديمة',lat:28.02,lon:40.93,ap:false,cs:'Jubbah oasis basin',t:'Ancient lake in dunes',
+  f:['A dried lake basin ringed by dunes in the Nafud desert.','Long-lasting westerly winds shaped the surrounding dunes, as seen from the ISS.','A wet past and a dry present preserved in one frame.'],
+  e:'Jubbah lake bed',m:'Jezero crater, the ancient Martian lake Perseverance explores',
+  tests:'Telling lake sediment from wind deposits, the key skill in choosing Mars sample-return cores.',
+  s:{mars:4,moon:1,rover:3,shelter:0,astro:5,calib:2,access:4,novel:4},
+  r:[['NASA Earth Observatory: A Long-Ago Lake Amid the Dunes','https://science.nasa.gov/earth/earth-observatory/a-long-ago-lake-amid-the-dunes-148005/']]},
+ {id:'rub',tg:{b:'Mars',n:'Bagnold Dunes, Gale crater',lat:-4.59,lon:137.44,why:'Active dunes that Curiosity crossed',src:['NASA Curiosity rover','https://science.nasa.gov/mission/msl-curiosity/']},fc:'Extreme heat in summer, no services; requires an expedition team, satellite comms and permits.',n:"Rub' al Khali dune sea",ar:'الربع الخالي',lat:20.3,lon:51.2,ap:true,cs:'representative point in the dune sea',t:'Sand sea',
+  f:['One of the largest sand seas on Earth.','Hyperarid, with huge linear and star dunes.','Hosts the Wabar craters.'],
+  e:"Rub' al Khali dunes",m:'Martian dune fields such as the Bagnold Dunes Curiosity crossed in Gale crater',
+  tests:'Wheel sinkage and slip on loose sand, dust handling, and long-range autonomy with no landmarks.',
+  s:{mars:4,moon:1,rover:5,shelter:0,astro:1,calib:4,access:1,novel:3},
+  r:[['Wynn & Shoemaker 1998, The Day the Sands Caught Fire, Scientific American','https://doi.org/10.1038/scientificamerican1198-64']]}
+
+ ,{id:'atacama',tg:{b:'Mars',n:'Gale crater',lat:-4.59,lon:137.44,why:'Dry Martian soils studied for habitability',src:['NASA Curiosity rover','https://science.nasa.gov/mission/msl-curiosity/']},ref:1,n:'Atacama Desert',ar:'صحراء أتاكاما',where:'Chile',lat:-24.5,lon:-69.25,ap:true,t:'Famous analog · Chile',
+  f:['The driest non-polar desert on Earth.','NASA studies its extremely dry ground to understand conditions on Mars.'],
+  e:'Atacama soils',m:'Hyper-arid Martian soils and the search for life',
+  tests:'Life-detection drills and instruments in near-sterile soil.',
+  fc:'Well-established field logistics and research stations.',
+  s:{mars:5,moon:2,rover:4,shelter:0,astro:5,calib:3,access:3,novel:0},
+  r:[['NASA: 10 Things to Know About Planetary Analogs','https://science.nasa.gov/earth/10-things-to-know-about-planetary-analogs/']]},
+ {id:'haughton',tg:{b:'Mars',n:'Jezero crater',lat:18.38,lon:77.58,why:'Crater terrain for field operations',src:['NASA Perseverance rover','https://science.nasa.gov/mission/mars-2020-perseverance/']},ref:1,n:'Haughton crater, Devon Island',ar:'فوهة هوتن',where:'Canada',lat:75.38,lon:-89.68,ap:true,t:'Famous analog · Canada',
+  f:['An impact crater on Devon Island, the largest uninhabited island in the world.','Home of the Haughton-Mars Project, where NASA teams practise Mars EVAs.'],
+  e:'Haughton crater',m:'Cratered Martian terrain for crew field operations',
+  tests:'EVA rehearsal and rover operations in a polar impact crater.',
+  fc:'Arctic and remote; field seasons are short summers only.',
+  s:{mars:5,moon:4,rover:4,shelter:0,astro:3,calib:2,access:1,novel:0},
+  r:[['NASA: 10 Things to Know About Planetary Analogs','https://science.nasa.gov/earth/10-things-to-know-about-planetary-analogs/']]},
+ {id:'kilauea',tg:{b:'Mars',n:'Arsia Mons, Tharsis volcanic province',lat:-8.26,lon:-120.09,why:'Basaltic volcanic terrain',src:['NASA Mars Trek','https://trek.nasa.gov/mars/']},ref:1,n:'Kilauea lava fields, Hawaii',ar:'حقول كيلاويا',where:'USA',lat:19.41,lon:-155.28,ap:true,t:'Famous analog · USA',
+  f:['NASA BASALT ran simulated Mars science missions on these lava fields in 2016 and 2017.','Its basalt resembles rock on ancient Mars, when Mars was warmer and wetter.'],
+  e:'Kilauea basalt',m:'Volcanic terrain of early Mars',
+  tests:'Crewed EVA science with a remote mission support team.',
+  fc:'National park with roads and a research base nearby.',
+  s:{mars:3,moon:4,rover:4,shelter:3,astro:3,calib:3,access:5,novel:0},
+  r:[['NASA: What is BASALT?','https://www.nasa.gov/missions/analog-field-testing/what-is-basalt/']]}
+];
+const PW={};
+let W={...P[0].w},cur=P[0].id,sel=null;
+const $=id=>document.getElementById(id);
+const val=(s,k)=>k==='clim'?(PW[s.id]?PW[s.id].clim:null):s.s[k];
+const score=s=>{let a=0,b=0;for(const c of C){const w=W[c.k]||0,v=val(s,c.k);if(v==null)continue;a+=w*v;b+=w*5}return b?Math.round(a/b*100):0};
+const L={khaybar:[1,-9],jirsan:[1,9],lunayyir:[-1,0],rahat:[-1,0],wahbah:[1,8]};
+const X=lon=>(lon-32)*18.5,Y=lat=>(34-lat)*18.5;
+const coast=[[29.5,34.9],[28,35.2],[26.2,36.5],[24.1,38.1],[21.5,39.2],[19,40.9],[16.9,42.6],[14.8,42.9],[12.6,43.4],[12.8,45],[13.8,48],[14.5,49.1],[15.6,52.2],[17,54.1],[18,56.5],[19.5,57.7],[20.6,58.6],[22.5,59.8],[23.6,58.6],[24.4,56.7],[25.6,56.3],[26.4,56.4],[25.2,55.3],[24.4,54.4],[24.2,52.6],[24.6,51.3],[26.2,51.2],[25,50.8],[26.4,50.1],[27,49.6],[28.5,48.5],[29.4,48],[30,48],[31,46.5],[32,44],[32.4,41],[32.2,39],[31.4,37],[29.9,35]];
+const pts=coast.map(([a,o])=>X(o).toFixed(1)+','+Y(a).toFixed(1)).join(' ');
+function map(){
+ const r=S.map(s=>({s,v:score(s)})),best=Math.max(...r.filter(x=>!x.s.ref).map(x=>x.v));
+ let g='';
+ for(const {s,v} of r){if(s.ref)continue;const x=X(s.lon),y=Y(s.lat),rad=4+v/9,on=sel===s.id,top=v===best;
+  g+=`<g class="pt" data-id="${s.id}" style="cursor:pointer">${top?`<circle class="halo" cx="${x}" cy="${y}" r="${rad}" style="--r0:${rad}px" fill="none" stroke="#e2561d" stroke-width="2"/>`:''}<circle cx="${x}" cy="${y}" r="${rad}" fill="#e2561d" fill-opacity="${.35+v/160}" stroke="${on?'#fff':'#1d1c1a'}" stroke-width="${on?2.5:1.5}"/><text x="${(L[s.id]||[1,0])[0]<0?x-rad-4:x+rad+4}" y="${y+4+(L[s.id]||[1,0])[1]}" text-anchor="${(L[s.id]||[1,0])[0]<0?'end':'start'}" font-size="12" fill="#f2efe8" stroke="#1d1c1a" stroke-width="3" paint-order="stroke" font-family="Archivo,sans-serif">${s.n.replace(' impact craters','').replace(' dune sea','').replace(' lava tube','').replace(' paleolake','')}${s.ap?' ≈':''}</text></g>`}
+ $('map').innerHTML=`<svg viewBox="0 0 520 430" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46423d"/><stop offset="1" stop-color="#2c2926"/></linearGradient></defs><rect width="520" height="430" fill="#1d2326"/><polygon points="${pts}" fill="#000" opacity=".35" transform="translate(4,6)"/><polygon points="${pts}" fill="url(#lg)" stroke="#6b655d" stroke-width="1.2"/><text x="40" y="300" font-size="12" fill="#7d8a90" font-family="Archivo" transform="rotate(-58 40 300)">Red Sea</text><text x="420" y="${Y(26.8)}" font-size="12" fill="#7d8a90" font-family="Archivo">Gulf</text>${g}</svg>`;
+ $('map').querySelectorAll('.pt').forEach(e=>e.addEventListener('click',()=>pick(e.dataset.id)));
+}
+function rank(){
+ const r=S.map(s=>({s,v:score(s)})).sort((a,b)=>b.v-a.v);
+ if(!sel)sel=r[0].s.id;
+ $('rank').innerHTML=r.map(({s,v},i)=>`<li><button class="row${s.ref?' ref':''}" data-id="${s.id}" aria-current="${s.id===sel}"><span class="n">${i+1}</span><span class="nm">${s.n}<small>${s.t}${s.ref?'':' · <span class="ar">'+s.ar+'</span>'}</small></span><span class="sc">${v}</span><span class="bar"><i style="width:${v}%"></i></span></button></li>`).join('');
+ const ba=r.find(x=>!x.s.ref),bf=r.find(x=>x.s.ref),d=ba.v-bf.v;$('vs').innerHTML=`Best Arabian site <b>${ba.s.n} ${ba.v}</b> vs best famous analog <b>${bf.s.n} ${bf.v}</b>: ${d>0?'Arabia leads by '+d:d<0?'the famous analog leads by '+(-d):'a tie'}.`;
+ $('rank').querySelectorAll('.row').forEach(b=>b.addEventListener('click',()=>pick(b.dataset.id)));
+}
+
+const trek=t=>{const z=5,col=Math.floor((t.lon+180)/360*2**(z+1)),row=Math.floor((90-t.lat)/180*2**z);return t.b==='Moon'?`https://trek.nasa.gov/tiles/Moon/EQ/LRO_WAC_Mosaic_Global_303ppd_v02/1.0.0/default/default028mm/${z}/${row}/${col}.jpg`:`https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/${z}/${row}/${col}.jpg`};
+const ll=(a,o)=>`${Math.abs(a).toFixed(2)}° ${a<0?'S':'N'}, ${Math.abs(o).toFixed(2)}° ${o<0?'W':'E'}`;
+function dossier(){
+ const s=S.find(x=>x.id===sel),v=score(s);
+ $('dosw').innerHTML=`<div class="dos"><div><span class="tag">${s.t} · fit ${v}/100</span><h2>${s.n} <span class="ar" style="font-weight:400">${s.ar}</span></h2><p class="note">${Math.abs(s.lat).toFixed(2)}° ${s.lat<0?'S':'N'}, ${Math.abs(s.lon).toFixed(2)}° ${s.lon<0?'W':'E'}${s.cs?' · '+s.cs:''}${s.ap?' (representative point)':''}${s.ref?' · famous analog, shown for comparison':''}</p><ul class="facts">${s.f.map(x=>`<li>${x}</li>`).join('')}</ul><h3>Tests to run here</h3><p>${s.tests}</p><div id="nasa" class="nasa"></div><h3>Field constraints</h3><p>${s.fc}</p><p><a href="https://worldview.earthdata.nasa.gov/?v=${(s.lon-.3).toFixed(2)},${(s.lat-.3).toFixed(2)},${(s.lon+.3).toFixed(2)},${(s.lat+.3).toFixed(2)}" target="_blank" rel="noopener">Open this site in NASA Worldview</a></p><h3>Sources</h3><ul class="src">${s.r.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join('')}</ul></div><div class="twin"><h3>Earth to space twin</h3><div class="vs"><div>${s.e}<br><small class="note">${ll(s.lat,s.lon)}</small></div><span>↔</span><div><b>${s.tg.b}:</b> ${s.tg.n}<br><small class="note">${ll(s.tg.lat,s.tg.lon)}${s.tg.ap?" (approx.)":""}</small></div></div><figure style="margin:0 0 10px"><img alt="${s.tg.b} target: ${s.tg.n}" src="${trek(s.tg)}" style="width:100%;max-width:256px;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;background:#2a2826" onerror="this.parentNode.style.display='none'"><figcaption class="note">${s.tg.b} target from NASA ${s.tg.b} Trek</figcaption></figure><p style="font-size:15px">${s.tg.why}. <a href="${s.tg.src[1]}" target="_blank" rel="noopener">${s.tg.src[0]}</a></p><p class="note">Also resembles: ${s.m}</p><h3>Criteria (0 to 5)</h3><div class="meters">${C.map(c=>{const v=val(s,c.k);return `<div class="m"><span>${c.l}</span><b><i style="width:${v==null?0:v*20}%"></i></b><em>${v==null?'…':v}</em></div>`}).join('')}</div></div></div>`;
+}
+
+const purl=s=>`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M_MAX,PRECTOTCORR,ALLSKY_SFC_SW_DWN,WS2M&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`;
+const gibs=(s,layer,time)=>{const d=.3;return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${layer}&CRS=EPSG:4326&BBOX=${(s.lat-d).toFixed(3)},${(s.lon-d).toFixed(3)},${(s.lat+d).toFixed(3)},${(s.lon+d).toFixed(3)}&WIDTH=480&HEIGHT=480&FORMAT=image/jpeg${time?'&TIME='+time:''}`};
+const MO=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+async function power(s){if(PW[s.id])return PW[s.id];const r=await fetch(purl(s));if(!r.ok)throw 0;const j=await r.json(),p=j.properties.parameter;
+ const v={rain:Math.round(p.PRECTOTCORR.ANN*365),tmax:Math.max(...MO.map(m=>p.T2M_MAX[m])),sun:p.ALLSKY_SFC_SW_DWN.ANN,wind:p.WS2M.ANN};
+ if(Object.values(v).some(x=>!isFinite(x)||x<-900))throw 0;
+ const dry=5*Math.max(0,1-v.rain/250),sun=5*Math.min(1,Math.max(0,(v.sun-4)/3.5));v.clim=Math.round((0.7*dry+0.3*sun)*10)/10;v.ts=null;
+ try{const t=await fetch(`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=TS&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`);if(t.ok){const q=(await t.json()).properties.parameter.TS;const mx=Math.max(...MO.map(m=>q[m]));if(isFinite(mx)&&mx>-900)v.ts=mx}}catch(e){}
+ return PW[s.id]=v}
+function nasaPanel(){const s=S.find(x=>x.id===sel),el=document.getElementById('nasa');if(!el)return;
+ el.innerHTML=`<h3>NASA view of this site</h3><div class="imgs"><figure><img alt="MODIS Terra true-colour image of ${s.n}" src="${gibs(s,'MODIS_Terra_CorrectedReflectance_TrueColor','2026-10-15')}" onerror="this.parentNode.style.display='none'"><figcaption>MODIS Terra true colour, NASA GIBS</figcaption></figure><figure><img alt="ASTER GDEM shaded relief of ${s.n}" src="${gibs(s,'ASTER_GDEM_Color_Shaded_Relief')}" onerror="this.parentNode.style.display='none'"><figcaption>ASTER GDEM shaded relief, NASA GIBS</figcaption></figure></div><div class="kv" id="kv"><div><span>Loading NASA POWER climate…</span></div></div>`;
+ power(s).then(v=>{if(sel!==s.id)return;document.getElementById('kv').innerHTML=`<div><b>${v.rain}</b><span>rain, mm/yr</span></div><div><b>${v.tmax.toFixed(1)}</b><span>hottest-month max, °C</span></div><div><b>${v.sun.toFixed(1)}</b><span>sun, kWh/m²/day</span></div><div><b>${v.wind.toFixed(1)}</b><span>wind at 2 m, m/s</span></div><div><b>${v.ts!=null?v.ts.toFixed(1):'–'}</b><span>hottest-month surface (skin) temp, °C</span></div><div><b>${v.clim}</b><span>Mars-like climate score, 0–5</span></div>`}).catch(()=>{const k=document.getElementById('kv');if(k)k.innerHTML=`<div style="grid-column:1/-1"><span>Live NASA data is blocked in this viewer. <a href="${purl(s)}" target="_blank" rel="noopener">Open the NASA POWER record</a> or view the project's public page.</span></div>`})}
+async function powerTable(){let ok=0;const rows=[];for(const s of S){try{const v=await power(s);ok++;rows.push({s,v})}catch(e){rows.push({s,v:null})}}
+ rows.sort((a,b)=>(a.v?a.v.rain:1e9)-(b.v?b.v.rain:1e9));
+ document.getElementById('pw').innerHTML=rows.map(({s,v})=>`<tr><td data-l="Site">${s.n}</td><td data-l="Rain (mm/yr)">${v?v.rain:'–'}</td><td data-l="Hottest max (°C)">${v?v.tmax.toFixed(1):'–'}</td><td data-l="Sun (kWh/m²/day)">${v?v.sun.toFixed(1):'–'}</td><td data-l="Wind (m/s)">${v?v.wind.toFixed(1):'–'}</td><td data-l="Surface temp (°C)">${v&&v.ts!=null?v.ts.toFixed(1):'–'}</td><td data-l="Climate score">${v?v.clim:'–'}</td></tr>`).join('');
+ if(ok){rank();map();dossier();nasaPanel()}
+ document.getElementById('pwnote').innerHTML=ok?`Source: NASA POWER climatology API, fetched live for ${ok} of ${S.length} sites. Sorted driest first. Scores above now include the measured climate criterion.`:`Live NASA data is blocked in this viewer (it allows no outside requests). Open the project's public page to load it, or check any site through the <a href="https://power.larc.nasa.gov/data-access-viewer/" target="_blank" rel="noopener">NASA POWER Data Access Viewer</a>.`}
+function pick(id){sel=id;rank();map();dossier();nasaPanel();try{history.replaceState(null,'','#'+id)}catch(e){}}
+function presets(){
+ $('presets').innerHTML=P.map(p=>`<button class="chip" data-p="${p.id}" aria-pressed="${p.id===cur}">${p.l}</button>`).join('');
+ $('presets').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{const p=P.find(x=>x.id===b.dataset.p);cur=p.id;W={...p.w};sel=null;presets();sliders();rank();map();dossier();nasaPanel()}));
+}
+function sliders(){
+ $('sliders').innerHTML=C.map(c=>`<label class="sl"><span>${c.l}</span><input type="range" min="0" max="3" step="1" value="${W[c.k]||0}" id="w-${c.k}" data-k="${c.k}"><span>${W[c.k]||0}</span></label>`).join('');
+ $('sliders').querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{W[i.dataset.k]=+i.value;i.nextElementSibling.textContent=i.value;cur='';$('presets').querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed','false'));rank();map();dossier();nasaPanel()}));
+}
+$('crit').innerHTML=C.map(c=>`<tr><td data-l="Criterion">${c.l}</td><td data-l="Asks">${c.q}</td><td data-l="NASA data">${c.d}</td></tr>`).join('');
+const h=location.hash.slice(1);if(S.some(s=>s.id===h))sel=h;
+presets();sliders();rank();map();dossier();nasaPanel();powerTable();
+}
+</script>
+</body>
+</html>
