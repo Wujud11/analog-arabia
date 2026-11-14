@@ -29,6 +29,10 @@ To publish it, enable **GitHub Pages** for this repo (Settings → Pages → Dep
 
 Other references (peer-reviewed papers, USGS and IUGS) are linked on each site card in the app.
 
+## Engineering engines
+- **Solar power engine:** a month-by-month photovoltaic model on NASA POWER data (ALLSKY_SFC_SW_DWN, T2M_MAX). It uses a NOCT cell-temperature model, a −0.35 %/°C silicon temperature coefficient, a 0.85 balance-of-system derate and an adjustable dust loss, then sizes the array for a habitat's worst (design) month. Users set habitat demand, panel efficiency and soiling.
+- **Rank stability (Monte Carlo):** 2,000 runs with every mission weight varied ±50% (seeded, reproducible) report how often each site comes first.
+
 ## Moon and Mars targets
 Every Earth site is paired with a named Moon or Mars target: Umm Jirsan with the Mare Tranquillitatis pit, Jubbah with Jezero crater, Rub' al Khali with Gale crater's Bagnold Dunes, Lunayyir with Cerberus Fossae, Al Wahbah with Meridiani Planum, and so on. No Arabian site reproduces the lunar south pole's permanent cold and shadow; the sites match lunar lava tubes and mare basalt instead, which are candidate places for a sheltered base.
 
