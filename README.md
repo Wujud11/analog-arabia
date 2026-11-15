@@ -1,6 +1,6 @@
 # Analog Arabia: a mission-fit atlas of Mars and Moon test sites in the Arabian Peninsula
 
-**NASA Space Apps Challenge 2026** · Team Red Harra (Riyadh) · Challenge: Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars · Saudi Arabia
+**NASA Space Apps Challenge 2026** · Team Red Harra (Universal Event) · Challenge: Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars · Saudi Arabia
 
 ## Summary
 NASA mostly tests rovers, instruments and crews at a few famous analog sites. The Arabian Peninsula has sites that fit specific tests at least as well, yet they rarely appear on analog shortlists. Analog Arabia lets a user pick a mission type (rover test, habitat trial, astrobiology, orbital instrument, unexplored) and ranks ten Saudi candidate sites (Jubbah in the north to Wadi Bisha in the south) by fit, next to three famous analogs (Atacama, Devon Island, Kilauea) rated on the same criteria. The Arabian sites lead on habitat, orbital-instrument and rover tests; Atacama leads on astrobiology. Each site card shows sourced facts, its Mars or Moon twin, field constraints, live NASA satellite imagery, and NASA POWER climate.
@@ -50,7 +50,7 @@ Coordinates come from the Smithsonian Global Volcanism Program, published papers
 The project was built by one participant directing AI agents (Claude, by Anthropic): Nova (research), Titan (build), Comet (writing) and Eclipse, an independent "judge" agent that fact-checked the work. The participant chose the challenge and the regional angle and made the final decisions. No AI-generated images are used.
 
 ## Team Red Harra
-- **Wujud Alshahrani** (Riyadh local event; from Bisha): Team Owner, project lead and final decisions
+- **Wujud Alshahrani** (Universal Event; from Bisha, based in Riyadh): Team Owner, project lead and final decisions
 - AI agents (Claude, by Anthropic), disclosed under Use of AI:
   - **Nova**: research and sources
   - **Titan**: build
