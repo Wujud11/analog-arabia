@@ -37,9 +37,11 @@ Other references (peer-reviewed papers, USGS and IUGS) are linked on each site c
 Every Earth site is paired with a named Moon or Mars target: Umm Jirsan with the Mare Tranquillitatis pit, Jubbah with Jezero crater, Rub' al Khali with Gale crater's Bagnold Dunes, Lunayyir with Cerberus Fossae, Al Wahbah with Meridiani Planum, and so on. No Arabian site reproduces the lunar south pole's permanent cold and shadow; the sites match lunar lava tubes and mare basalt instead, which are candidate places for a sheltered base.
 
 ## Methodology: weighted multi-criteria decision analysis (MCDA)
-Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100 over nine criteria, with one weight set per mission.
-- **Measured live from NASA POWER:** Mars-like climate = 0.7 × dryness + 0.3 × sunlight (dryness from annual precipitation PRECTOTCORR; sunlight from ALLSKY_SFC_SW_DWN). Surface skin temperature (TS), air temperature and wind are shown for every site.
+Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100 over ten criteria, with one weight set per mission.
+- **Measured live from NASA POWER (2 of 10):** thermal cycling = 5 × (T2M_MAX − T2M_MIN) ÷ 20 °C, capped at 5; Mars-like climate = 0.7 × dryness + 0.3 × sunlight (dryness from annual precipitation PRECTOTCORR; sunlight from ALLSKY_SFC_SW_DWN). Surface skin temperature (TS), air temperature and wind are shown for every site.
 - **From the scientific literature:** Mars likeness, Moon likeness, rover terrain, shelter, past water, orbital calibration, access and novelty, rated 0–5 from the sources cited on each site card.
+- **Robustness:** two seeded Monte Carlo tests (2,000 runs each): weights ±50%, and every expert rating shifted by −1/0/+1.
+- **Limitations:** no Arabian site reproduces the lunar south pole's permanent cold traps; eight criteria are literature ratings, not field measurements; NASA POWER is a ~0.5° grid, so values describe the region around a site.
 - **Planned, not yet in the score:** SRTM/NASADEM terrain roughness and EMIT surface minerals.
 
 Coordinates come from the Smithsonian Global Volcanism Program, published papers and NASA pages.

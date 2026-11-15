@@ -151,11 +151,13 @@ footer{border-top:1px solid var(--line)}
 <section class="band" style="background:var(--card)">
 <div class="wrap">
 <h2>Methodology: weighted multi-criteria decision analysis (MCDA)</h2>
-<p>The fit score is a weighted-sum MCDA. Each site is scored 0 to 5 on nine criteria, each mission is a set of weights, and Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100.</p>
-<p><b>Measured from NASA data (live):</b> the Mars-like climate criterion is computed for every site from the NASA POWER climatology API (free, no key) as 0.7 × dryness + 0.3 × sunlight, where dryness = 5 × (1 − annual rain ÷ 250 mm) and sunlight = 5 × (annual solar radiation − 4) ÷ 3.5 kWh/m²/day, both clipped to 0–5. NASA POWER also supplies surface skin temperature, air temperature and wind on every site card.</p>
-<p><b>From the scientific literature:</b> the other eight criteria are rated from the sources cited on each site card. They are expert judgements and are labelled that way.</p>
+<p>The fit score is a weighted-sum MCDA. Each site is scored 0 to 5 on ten criteria, each mission is a set of weights, and Score = Σ(weight × criterion) ÷ Σ(weight × 5) × 100.</p>
+<p><b>Measured from NASA data (live), 2 of 10 criteria:</b> thermal cycling = 5 × (mean daily T2M_MAX − T2M_MIN) ÷ 20 °C, capped at 5, because hardware on the Moon and Mars must survive large day–night swings. The Mars-like climate criterion is computed for every site from the NASA POWER climatology API (free, no key) as 0.7 × dryness + 0.3 × sunlight, where dryness = 5 × (1 − annual rain ÷ 250 mm) and sunlight = 5 × (annual solar radiation − 4) ÷ 3.5 kWh/m²/day, both clipped to 0–5. NASA POWER also supplies surface skin temperature, air temperature and wind on every site card.</p>
+<p><b>From the scientific literature:</b> the other eight criteria (marked “rated” on each card) are rated from the sources cited on each site card. They are expert judgements and are labelled that way.</p>
 <p><b>Next measured criteria (not yet in the score):</b> terrain roughness from SRTM/NASADEM and surface minerals from EMIT, which need Earthdata downloads we could not process in the hackathon window.</p>
 <p><b>Moon and Mars side:</b> every Earth site is paired with a named target on the Moon or Mars, with its coordinates, the NASA mission that studied it, and a tile from NASA Moon Trek (LRO WAC mosaic) or Mars Trek (Viking colour mosaic). No Arabian site reproduces the lunar south pole's permanent cold and shadow. They match lunar lava tubes and mare basalt instead, which are candidate places for a sheltered base.</p>
+<p><b>Robustness:</b> two Monte Carlo tests run on every view: weights varied ±50%, and every expert rating shifted by −1, 0 or +1, each over 2,000 seeded runs.</p>
+<p><b>Limitations:</b> no Arabian site reproduces the lunar south pole's permanent cold traps; eight criteria are literature ratings, not field measurements; NASA POWER climatology is a coarse grid (about 0.5°), so it describes the region around a site, not the exact spot.</p>
 <p>Coordinates come from the Smithsonian Global Volcanism Program, published papers and NASA pages. Each card shows what its coordinate marks.</p>
 <table class="stack">
 <thead><tr><th>Criterion</th><th>What it asks</th><th>NASA data that measures it</th></tr></thead>
@@ -186,11 +188,12 @@ const C=[
  {k:'calib',l:'Orbital calibration',q:'Is it stable and clear for testing orbital instruments?',d:'NISAR / Sentinel-1 InSAR coherence, MODIS clouds'},
  {k:'access',l:'Access',q:'How easy is it to bring a team and equipment?',d:'Roads, distance to cities (ancillary)'},
  {k:'novel',l:'Novelty',q:'How little has it been used as a space analog?',d:'Literature count (NASA ADS)'},
+ {k:'therm',l:'Thermal cycling (measured)',q:'How big is the daily temperature swing that hardware must survive? Computed live: 5 × daily range ÷ 20 °C, capped at 5',d:'NASA POWER: T2M_MAX − T2M_MIN (annual mean daily range)',m:1},
  {k:'clim',l:'Mars-like climate (measured)',q:'How dry and sunny is it? Computed live: 0.7 × dryness + 0.3 × sunlight',d:'NASA POWER: precipitation (PRECTOTCORR) and solar radiation (ALLSKY_SFC_SW_DWN)',m:1}
 ];
 const P=[
- {id:'rover',l:'Rover test',w:{mars:2,moon:1,rover:3,access:1,clim:1}},
- {id:'habitat',l:'Habitat trial',w:{shelter:3,moon:2,mars:1,access:1}},
+ {id:'rover',l:'Rover test',w:{mars:2,moon:1,rover:3,access:1,clim:1,therm:1}},
+ {id:'habitat',l:'Habitat trial',w:{shelter:3,moon:2,mars:1,access:1,therm:1}},
  {id:'astro',l:'Astrobiology',w:{astro:3,mars:2,clim:2}},
  {id:'calib',l:'Orbital instrument',w:{calib:3,mars:1,access:1,clim:1}},
  {id:'novel',l:'Unexplored',w:{novel:3,mars:1,moon:1}}
@@ -280,9 +283,10 @@ const S=[
   r:[['NASA: What is BASALT?','https://www.nasa.gov/missions/analog-field-testing/what-is-basalt/']]}
 ];
 const PW={};
+let RP=null;
 let W={...P[0].w},cur=P[0].id,sel=null;
 const $=id=>document.getElementById(id);
-const val=(s,k)=>k==='clim'?(PW[s.id]?PW[s.id].clim:null):s.s[k];
+const val=(s,k)=>k==='clim'||k==='therm'?(PW[s.id]?PW[s.id][k]:null):(RP?RP[s.id][k]:s.s[k]);
 const score=s=>{let a=0,b=0;for(const c of C){const w=W[c.k]||0,v=val(s,c.k);if(v==null)continue;a+=w*v;b+=w*5}return b?Math.round(a/b*100):0};
 const L={khaybar:[1,-9],jirsan:[1,9],lunayyir:[-1,0],rahat:[-1,0],wahbah:[1,-6],nawasif:[1,0],bisha:[1,6]};
 const X=lon=>(lon-32)*18.5,Y=lat=>(34-lat)*18.5;
@@ -301,7 +305,7 @@ function rank(){
  if(!sel)sel=r[0].s.id;
  $('rank').innerHTML=r.map(({s,v},i)=>`<li><button class="row${s.ref?' ref':''}" data-id="${s.id}" aria-current="${s.id===sel}"><span class="n">${i+1}</span><span class="nm">${s.n}<small>${s.t}${s.ref?'':' · <span class="ar">'+s.ar+'</span>'}</small></span><span class="sc">${v}</span><span class="bar"><i style="width:${v}%"></i></span></button></li>`).join('');
  const ba=r.find(x=>!x.s.ref),bf=r.find(x=>x.s.ref),d=ba.v-bf.v;$('vs').innerHTML=`Best Arabian site <b>${ba.s.n} ${ba.v}</b> vs best famous analog <b>${bf.s.n} ${bf.v}</b>: ${d>0?'Arabia leads by '+d:d<0?'the famous analog leads by '+(-d):'a tie'}.`;
- try{$('stab').textContent=stability()}catch(e){}
+ try{$('stab').textContent=stability()}catch(e){$('stab').textContent='Rank stability could not be computed.'}
  $('rank').querySelectorAll('.row').forEach(b=>b.addEventListener('click',()=>pick(b.dataset.id)));
 }
 
@@ -309,22 +313,23 @@ const trek=t=>{const z=5,col=Math.floor((t.lon+180)/360*2**(z+1)),row=Math.floor
 const ll=(a,o)=>`${Math.abs(a).toFixed(2)}° ${a<0?'S':'N'}, ${Math.abs(o).toFixed(2)}° ${o<0?'W':'E'}`;
 function dossier(){
  const s=S.find(x=>x.id===sel),v=score(s);
- $('dosw').innerHTML=`<div class="dos"><div><span class="tag">${s.t} · fit ${v}/100</span><h2>${s.n} <span class="ar" style="font-weight:400">${s.ar}</span></h2><p class="note">${Math.abs(s.lat).toFixed(2)}° ${s.lat<0?'S':'N'}, ${Math.abs(s.lon).toFixed(2)}° ${s.lon<0?'W':'E'}${s.cs?' · '+s.cs:''}${s.ap?' (representative point)':''}${s.ref?' · famous analog, shown for comparison':''}</p><ul class="facts">${s.f.map(x=>`<li>${x}</li>`).join('')}</ul><h3>Tests to run here</h3><p>${s.tests}</p><div id="nasa" class="nasa"></div><h3>Field constraints</h3><p>${s.fc}</p><p><a href="https://worldview.earthdata.nasa.gov/?v=${(s.lon-.3).toFixed(2)},${(s.lat-.3).toFixed(2)},${(s.lon+.3).toFixed(2)},${(s.lat+.3).toFixed(2)}" target="_blank" rel="noopener">Open this site in NASA Worldview</a></p><h3>Sources</h3><ul class="src">${s.r.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join('')}</ul></div><div class="twin"><h3>Earth to space twin</h3><div class="vs"><div>${s.e}<br><small class="note">${ll(s.lat,s.lon)}</small></div><span>↔</span><div><b>${s.tg.b}:</b> ${s.tg.n}<br><small class="note">${ll(s.tg.lat,s.tg.lon)}${s.tg.ap?" (approx.)":""}</small></div></div><figure style="margin:0 0 10px"><img alt="${s.tg.b} target: ${s.tg.n}" src="${trek(s.tg)}" style="width:100%;max-width:256px;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;background:#2a2826" onerror="this.parentNode.style.display='none'"><figcaption class="note">${s.tg.b} target from NASA ${s.tg.b} Trek</figcaption></figure><p style="font-size:15px">${s.tg.why}. <a href="${s.tg.src[1]}" target="_blank" rel="noopener">${s.tg.src[0]}</a></p><p class="note">Also resembles: ${s.m}</p><h3>Criteria (0 to 5)</h3><div class="meters">${C.map(c=>{const v=val(s,c.k);return `<div class="m"><span>${c.l}</span><b><i style="width:${v==null?0:v*20}%"></i></b><em>${v==null?'…':v}</em></div>`}).join('')}</div></div></div>`;
+ $('dosw').innerHTML=`<div class="dos"><div><span class="tag">${s.t} · fit ${v}/100</span><h2>${s.n} <span class="ar" style="font-weight:400">${s.ar}</span></h2><p class="note">${Math.abs(s.lat).toFixed(2)}° ${s.lat<0?'S':'N'}, ${Math.abs(s.lon).toFixed(2)}° ${s.lon<0?'W':'E'}${s.cs?' · '+s.cs:''}${s.ap?' (representative point)':''}${s.ref?' · famous analog, shown for comparison':''}</p><ul class="facts">${s.f.map(x=>`<li>${x}</li>`).join('')}</ul><h3>Tests to run here</h3><p>${s.tests}</p><div id="nasa" class="nasa"></div><h3>Field constraints</h3><p>${s.fc}</p><p><a href="https://worldview.earthdata.nasa.gov/?v=${(s.lon-.3).toFixed(2)},${(s.lat-.3).toFixed(2)},${(s.lon+.3).toFixed(2)},${(s.lat+.3).toFixed(2)}" target="_blank" rel="noopener">Open this site in NASA Worldview</a></p><h3>Sources</h3><ul class="src">${s.r.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join('')}</ul></div><div class="twin"><h3>Earth to space twin</h3><div class="vs"><div>${s.e}<br><small class="note">${ll(s.lat,s.lon)}</small></div><span>↔</span><div><b>${s.tg.b}:</b> ${s.tg.n}<br><small class="note">${ll(s.tg.lat,s.tg.lon)}${s.tg.ap?" (approx.)":""}</small></div></div><figure style="margin:0 0 10px"><img alt="${s.tg.b} target: ${s.tg.n}" src="${trek(s.tg)}" style="width:100%;max-width:256px;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;background:#2a2826" onerror="this.parentNode.style.display='none'"><figcaption class="note">${s.tg.b} target from NASA ${s.tg.b} Trek</figcaption></figure><p style="font-size:15px">${s.tg.why}. <a href="${s.tg.src[1]}" target="_blank" rel="noopener">${s.tg.src[0]}</a></p><p class="note">Also resembles: ${s.m}</p><h3>Criteria (0 to 5)</h3><div class="meters">${C.map(c=>{const v=val(s,c.k);return `<div class="m"><span>${c.l}${c.m?'':' <small class="note">· rated</small>'}</span><b><i style="width:${v==null?0:v*20}%"></i></b><em>${v==null?'…':v}</em></div>`}).join('')}</div></div></div>`;
 }
 
-const purl=s=>`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M_MAX,PRECTOTCORR,ALLSKY_SFC_SW_DWN,WS2M&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`;
+const purl=s=>`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M_MAX,T2M_MIN,PRECTOTCORR,ALLSKY_SFC_SW_DWN,WS2M&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`;
 const gibs=(s,layer,time)=>{const d=.3;return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${layer}&CRS=EPSG:4326&BBOX=${(s.lat-d).toFixed(3)},${(s.lon-d).toFixed(3)},${(s.lat+d).toFixed(3)},${(s.lon+d).toFixed(3)}&WIDTH=480&HEIGHT=480&FORMAT=image/jpeg${time?'&TIME='+time:''}`};
 const MO=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 async function power(s){if(PW[s.id])return PW[s.id];const r=await fetch(purl(s));if(!r.ok)throw 0;const j=await r.json(),p=j.properties.parameter;
  const v={rain:Math.round(p.PRECTOTCORR.ANN*365),tmax:Math.max(...MO.map(m=>p.T2M_MAX[m])),sun:p.ALLSKY_SFC_SW_DWN.ANN,wind:p.WS2M.ANN,mH:MO.map(m=>Math.max(0,p.ALLSKY_SFC_SW_DWN[m])),mT:MO.map(m=>p.T2M_MAX[m])};
  if(v.mH.some(x=>!isFinite(x)||x<0)||v.mT.some(x=>!isFinite(x)||x<-900))throw 0;
  if([v.rain,v.tmax,v.sun,v.wind].some(x=>!isFinite(x)||x<-900))throw 0;
+ v.dtr=p.T2M_MIN&&isFinite(p.T2M_MIN.ANN)&&p.T2M_MIN.ANN>-900?p.T2M_MAX.ANN-p.T2M_MIN.ANN:null;v.therm=v.dtr==null?null:Math.round(5*Math.min(1,Math.max(0,v.dtr/20))*10)/10;
  const dry=5*Math.max(0,1-v.rain/250),sun=5*Math.min(1,Math.max(0,(v.sun-4)/3.5));v.clim=Math.round((0.7*dry+0.3*sun)*10)/10;v.ts=null;
- try{const t=await fetch(`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=TS&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`);if(t.ok){const q=(await t.json()).properties.parameter.TS;const mx=Math.max(...MO.map(m=>q[m]));if(isFinite(mx)&&mx>-900)v.ts=mx}}catch(e){}
+ try{const t=await fetch(`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=TS&community=RE&longitude=${s.lon}&latitude=${s.lat}&format=JSON`);if(t.ok){const q=(await t.json()).properties.parameter.TS;const mx=Math.max(...MO.map(m=>q[m]));if(isFinite(mx)&&mx>-900)v.ts=mx}}catch(e){v.tsErr=1}
  return PW[s.id]=v}
 function nasaPanel(){const s=S.find(x=>x.id===sel),el=document.getElementById('nasa');if(!el)return;
  el.innerHTML=`<h3>NASA view of this site</h3><div class="imgs"><figure><img alt="MODIS Terra true-colour image of ${s.n}" src="${gibs(s,'MODIS_Terra_CorrectedReflectance_TrueColor','2026-10-15')}" onerror="this.parentNode.style.display='none'"><figcaption>MODIS Terra true colour, NASA GIBS</figcaption></figure><figure><img alt="ASTER GDEM shaded relief of ${s.n}" src="${gibs(s,'ASTER_GDEM_Color_Shaded_Relief')}" onerror="this.parentNode.style.display='none'"><figcaption>ASTER GDEM shaded relief, NASA GIBS</figcaption></figure></div><div class="kv" id="kv"><div><span>Loading NASA POWER climate…</span></div></div>`;
- power(s).then(v=>{if(sel!==s.id)return;document.getElementById('kv').innerHTML=`<div><b>${v.rain}</b><span>rain, mm/yr</span></div><div><b>${v.tmax.toFixed(1)}</b><span>hottest-month max, °C</span></div><div><b>${v.sun.toFixed(1)}</b><span>sun, kWh/m²/day</span></div><div><b>${v.wind.toFixed(1)}</b><span>wind at 2 m, m/s</span></div><div><b>${v.ts!=null?v.ts.toFixed(1):'–'}</b><span>hottest-month surface (skin) temp, °C</span></div><div><b>${v.clim}</b><span>Mars-like climate score, 0–5</span></div><div><b>${isFinite(pv(v).area)?pv(v).area.toFixed(1):'∞'}</b><span>m² of panels for a ${EP.dem} kWh/day habitat</span></div>`}).catch(()=>{const k=document.getElementById('kv');if(k)k.innerHTML=`<div style="grid-column:1/-1"><span>Live NASA data is blocked in this viewer. <a href="${purl(s)}" target="_blank" rel="noopener">Open the NASA POWER record</a> or view the project's public page.</span></div>`})}
+ power(s).then(v=>{if(sel!==s.id)return;document.getElementById('kv').innerHTML=`<div><b>${v.rain}</b><span>rain, mm/yr</span></div><div><b>${v.tmax.toFixed(1)}</b><span>hottest-month max, °C</span></div><div><b>${v.sun.toFixed(1)}</b><span>sun, kWh/m²/day</span></div><div><b>${v.wind.toFixed(1)}</b><span>wind at 2 m, m/s</span></div><div><b>${v.ts!=null?v.ts.toFixed(1):'–'}</b><span>hottest-month surface (skin) temp, °C</span></div><div><b>${v.clim}</b><span>Mars-like climate score, 0–5</span></div><div><b>${v.dtr!=null?v.dtr.toFixed(1):'–'}</b><span>mean daily temperature swing, °C</span></div><div><b>${isFinite(pv(v).area)?pv(v).area.toFixed(1):'∞'}</b><span>m² of panels for a ${EP.dem} kWh/day habitat</span></div>`}).catch(()=>{const k=document.getElementById('kv');if(k)k.innerHTML=`<div style="grid-column:1/-1"><span>Live NASA data is blocked in this viewer. <a href="${purl(s)}" target="_blank" rel="noopener">Open the NASA POWER record</a> or view the project's public page.</span></div>`})}
 async function powerTable(){let ok=0;const rows=[];for(const s of S){try{const v=await power(s);ok++;rows.push({s,v})}catch(e){rows.push({s,v:null})}}
  rows.sort((a,b)=>(a.v?a.v.rain:1e9)-(b.v?b.v.rain:1e9));
  document.getElementById('pw').innerHTML=rows.map(({s,v})=>`<tr><td data-l="Site">${s.n}</td><td data-l="Rain (mm/yr)">${v?v.rain:'–'}</td><td data-l="Hottest max (°C)">${v?v.tmax.toFixed(1):'–'}</td><td data-l="Sun (kWh/m²/day)">${v?v.sun.toFixed(1):'–'}</td><td data-l="Wind (m/s)">${v?v.wind.toFixed(1):'–'}</td><td data-l="Surface temp (°C)">${v&&v.ts!=null?v.ts.toFixed(1):'–'}</td><td data-l="Climate score">${v?v.clim:'–'}</td></tr>`).join('');
@@ -344,7 +349,10 @@ function engine(){const rows=S.filter(s=>PW[s.id]).map(s=>({s,p:pv(PW[s.id])})).
 function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function stability(){const R=rng(42),N=2000,act=C.filter(c=>W[c.k]),wins={};if(!act.length)return 'Set at least one weight to test rank stability.';const base={...W};
  try{for(let n=0;n<N;n++){for(const c of act)W[c.k]=base[c.k]*(0.5+R());let b=null,bv=-1;for(const s of S){let a=0,d=0;for(const c of C){const w=W[c.k]||0,x=val(s,c.k);if(x==null)continue;a+=w*x;d+=w*5}const v=d?a/d:0;if(v>bv){bv=v;b=s}}wins[b.id]=(wins[b.id]||0)+1}}finally{Object.assign(W,base)}const top=Object.entries(wins).sort((a,b)=>b[1]-a[1]);const f=S.find(s=>s.id===top[0][0]);
- return `Rank stability: with every weight randomly varied ±50% across ${N.toLocaleString()} runs, ${f.n} comes first in ${Math.round(top[0][1]/N*100)}% of them`+(top[1]?`; next is ${S.find(s=>s.id===top[1][0]).n} at ${Math.round(top[1][1]/N*100)}%.`:'.')+(f.ref?'':' ')}
+ const R2=rng(7),w2={};try{for(let n=0;n<N;n++){RP={};for(const s of S){RP[s.id]={};for(const k in s.s)RP[s.id][k]=Math.min(5,Math.max(0,s.s[k]+Math.floor(R2()*3)-1))}let b=null,bv=-1;for(const s of S){let a=0,d=0;for(const c of C){const w=W[c.k]||0,x=val(s,c.k);if(x==null)continue;a+=w*x;d+=w*5}const v=d?a/d:0;if(v>bv){bv=v;b=s}}w2[b.id]=(w2[b.id]||0)+1}}finally{RP=null}
+ const t2=Object.entries(w2).sort((a,b)=>b[1]-a[1]);const f2=S.find(s=>s.id===t2[0][0]);
+ const line2=` Rating error: with every expert rating randomly shifted by −1, 0 or +1 across ${N.toLocaleString()} runs, ${f2.n} comes first in ${Math.round(t2[0][1]/N*100)}% of them.`;
+ return `Rank stability: with every weight randomly varied ±50% across ${N.toLocaleString()} runs, ${f.n} comes first in ${Math.round(top[0][1]/N*100)}% of them`+(top[1]?`; next is ${S.find(s=>s.id===top[1][0]).n} at ${Math.round(top[1][1]/N*100)}%.`:'.')+line2}
 function pick(id){sel=id;rank();map();dossier();nasaPanel();try{history.replaceState(null,'','#'+id)}catch(e){}}
 function presets(){
  $('presets').innerHTML=P.map(p=>`<button class="chip" data-p="${p.id}" aria-pressed="${p.id===cur}">${p.l}</button>`).join('');
