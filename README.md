@@ -3,7 +3,7 @@
 **NASA Space Apps Challenge 2026** · Team Red Harra (Riyadh) · Challenge: Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars · Saudi Arabia
 
 ## Summary
-NASA mostly tests rovers, instruments and crews at a few famous analog sites. The Arabian Peninsula has sites that fit specific tests at least as well, yet they rarely appear on analog shortlists. Analog Arabia lets a user pick a mission type (rover test, habitat trial, astrobiology, orbital instrument, unexplored) and ranks eight candidate sites by fit, next to three famous analogs (Atacama, Devon Island, Kilauea) rated on the same criteria. The Arabian sites lead on habitat, orbital-instrument and rover tests; Atacama leads on astrobiology. Each site card shows sourced facts, its Mars or Moon twin, field constraints, live NASA satellite imagery, and NASA POWER climate.
+NASA mostly tests rovers, instruments and crews at a few famous analog sites. The Arabian Peninsula has sites that fit specific tests at least as well, yet they rarely appear on analog shortlists. Analog Arabia lets a user pick a mission type (rover test, habitat trial, astrobiology, orbital instrument, unexplored) and ranks ten Saudi candidate sites (Jubbah in the north to Wadi Bisha in the south) by fit, next to three famous analogs (Atacama, Devon Island, Kilauea) rated on the same criteria. The Arabian sites lead on habitat, orbital-instrument and rover tests; Atacama leads on astrobiology. Each site card shows sourced facts, its Mars or Moon twin, field constraints, live NASA satellite imagery, and NASA POWER climate.
 
 ## Demo
 - **Live atlas:** https://wujud11.github.io/analog-arabia/

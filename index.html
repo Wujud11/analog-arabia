@@ -99,7 +99,7 @@ footer{border-top:1px solid var(--line)}
 <div class="wrap">
 <h1>Arabia holds Mars and Moon test sites the usual analog list overlooks</h1>
 <p class="lede" style="margin-top:-4px">NASA Space Apps 2026 · Identify Earth Locations That Analog the Permanent Moon Base Locations and Mars</p>
-<p class="lede">NASA's go-to analogs are Atacama, Devon Island and Hawaii. The Arabian Peninsula has young basalt fields, a 1.5 km lava tube, a young iron-meteorite crater field in the Empty Quarter, and a dike intrusion that InSAR recorded in 2009. Pick a mission and the atlas ranks which site to test it at. <span class="ar">أطلس النظائر العربية للمريخ والقمر</span></p>
+<p class="lede">NASA's go-to analogs are Atacama, Devon Island and Hawaii. The Arabian Peninsula has young basalt fields, a 1.5 km lava tube, a young iron-meteorite crater field in the Empty Quarter, and a dike intrusion that InSAR recorded in 2009. Pick a mission and the atlas ranks which of ten sites to test it at, from Jubbah in the north to Wadi Bisha in the south. <span class="ar">أطلس النظائر العربية للمريخ والقمر</span></p>
 <div class="grid">
 <div>
 <div class="fig" id="map" role="img" aria-label="Stylised map of the Arabian Peninsula with candidate analog sites sized by mission fit"></div>
@@ -238,6 +238,18 @@ const S=[
   tests:'Telling lake sediment from wind deposits, the key skill in choosing Mars sample-return cores.',
   s:{mars:4,moon:1,rover:3,shelter:0,astro:5,calib:2,access:4,novel:4},
   r:[['NASA Earth Observatory: A Long-Ago Lake Amid the Dunes','https://science.nasa.gov/earth/earth-observatory/a-long-ago-lake-amid-the-dunes-148005/']]},
+ {id:'nawasif',tg:{b:'Moon',n:'Marius Hills volcanic field',lat:13.4,lon:-56.7,ap:1,why:'A lunar field of volcanic domes and cones',src:['NASA Lunar Reconnaissance Orbiter','https://science.nasa.gov/mission/lro/']},fc:'Remote lava plateau in the Makkah region, the closest big harrat to Bisha; 4x4 needed.',n:'Harrat Nawasif–Al Buqum',ar:'حرة نواصف والبقوم',lat:21,lon:42,ap:true,cs:'locality point (1° precision)',t:'Cone & crater field',
+  f:['A volcanic field of about 10,800 km², formed where the Nawasif and Al Buqum lava fields merge.','Its centre is crowned by many scoria cones and explosion craters.','Lavas are nepheline basanite, a silica-poor basalt.'],
+  e:'Nawasif–Al Buqum cones',m:'Volcanic cone fields on the Moon and Mars',
+  tests:'Navigation across dense cone fields and crater rims; sampling fresh basaltic scoria.',
+  s:{mars:3,moon:4,rover:4,shelter:1,astro:1,calib:3,access:3,novel:5},
+  r:[['Mindat: Harrat Nawasif–Al Buqum Volcanic Field','https://www.mindat.org/loc-341926.html'],['Coleman, Gregory & Brown 1983, Cenozoic volcanic rocks of Saudi Arabia (USGS)','https://pubs.usgs.gov/of/1983/0788/report.pdf']]},
+ {id:'bisha',tg:{b:'Mars',n:'Eberswalde delta',lat:-23.8,lon:-33.6,ap:1,why:'A fan-shaped ancient river delta, once a candidate rover landing site',src:['NASA Mars Trek','https://trek.nasa.gov/mars/']},fc:'Beside Bisha city, so logistics are easy; stay out of the wadi bed when rain is forecast, because floods come fast.',n:'Wadi Bisha',ar:'وادي بيشة',lat:19.9,lon:42.6,ap:false,cs:'Wadi Bisha near Bisha',t:'Dry river system',
+  f:['One of the longest seasonal riverbeds in Arabia, rising in the Sarawat Mountains above 2,000 m.','The King Fahd Dam on the wadi drains a catchment of about 7,600 km².','Rare floods carry so much sediment that the reservoir loses capacity every year.'],
+  e:'Wadi Bisha',m:'Dry valley networks and river deltas on ancient Mars',
+  tests:'Reading flood deposits and channel sediments, the evidence rovers use to reconstruct ancient Martian rivers.',
+  s:{mars:3,moon:0,rover:3,shelter:0,astro:4,calib:2,access:5,novel:5},
+  r:[['Wikipedia: King Fahad Dam','https://en.wikipedia.org/wiki/King_Fahad_Dam'],['Hydraulic design of a sediment-trapping basin for Wadi Bishah, Processes 2023','https://www.mdpi.com/2227-9717/11/9/2729'],['Plizio: Wadi Bisha','https://www.plizio.com/en/saudi-arabia/sa-14/wadi-bisha/']]},
  {id:'rub',tg:{b:'Mars',n:'Bagnold Dunes, Gale crater',lat:-4.59,lon:137.44,why:'Active dunes that Curiosity crossed',src:['NASA Curiosity rover','https://science.nasa.gov/mission/msl-curiosity/']},fc:'Extreme heat in summer, no services; requires an expedition team, satellite comms and permits.',n:"Rub' al Khali dune sea",ar:'الربع الخالي',lat:20.3,lon:51.2,ap:true,cs:'representative point in the dune sea',t:'Sand sea',
   f:['One of the largest sand seas on Earth.','Hyperarid, with huge linear and star dunes.','Hosts the Wabar craters.'],
   e:"Rub' al Khali dunes",m:'Martian dune fields such as the Bagnold Dunes Curiosity crossed in Gale crater',
@@ -272,7 +284,7 @@ let W={...P[0].w},cur=P[0].id,sel=null;
 const $=id=>document.getElementById(id);
 const val=(s,k)=>k==='clim'?(PW[s.id]?PW[s.id].clim:null):s.s[k];
 const score=s=>{let a=0,b=0;for(const c of C){const w=W[c.k]||0,v=val(s,c.k);if(v==null)continue;a+=w*v;b+=w*5}return b?Math.round(a/b*100):0};
-const L={khaybar:[1,-9],jirsan:[1,9],lunayyir:[-1,0],rahat:[-1,0],wahbah:[1,8]};
+const L={khaybar:[1,-9],jirsan:[1,9],lunayyir:[-1,0],rahat:[-1,0],wahbah:[1,-6],nawasif:[1,0],bisha:[1,6]};
 const X=lon=>(lon-32)*18.5,Y=lat=>(34-lat)*18.5;
 const coast=[[29.5,34.9],[28,35.2],[26.2,36.5],[24.1,38.1],[21.5,39.2],[19,40.9],[16.9,42.6],[14.8,42.9],[12.6,43.4],[12.8,45],[13.8,48],[14.5,49.1],[15.6,52.2],[17,54.1],[18,56.5],[19.5,57.7],[20.6,58.6],[22.5,59.8],[23.6,58.6],[24.4,56.7],[25.6,56.3],[26.4,56.4],[25.2,55.3],[24.4,54.4],[24.2,52.6],[24.6,51.3],[26.2,51.2],[25,50.8],[26.4,50.1],[27,49.6],[28.5,48.5],[29.4,48],[30,48],[31,46.5],[32,44],[32.4,41],[32.2,39],[31.4,37],[29.9,35]];
 const pts=coast.map(([a,o])=>X(o).toFixed(1)+','+Y(a).toFixed(1)).join(' ');
@@ -280,7 +292,7 @@ function map(){
  const r=S.map(s=>({s,v:score(s)})),best=Math.max(...r.filter(x=>!x.s.ref).map(x=>x.v));
  let g='';
  for(const {s,v} of r){if(s.ref)continue;const x=X(s.lon),y=Y(s.lat),rad=4+v/9,on=sel===s.id,top=v===best;
-  g+=`<g class="pt" data-id="${s.id}" style="cursor:pointer">${top?`<circle class="halo" cx="${x}" cy="${y}" r="${rad}" style="--r0:${rad}px" fill="none" stroke="#e2561d" stroke-width="2"/>`:''}<circle cx="${x}" cy="${y}" r="${rad}" fill="#e2561d" fill-opacity="${.35+v/160}" stroke="${on?'#fff':'#1d1c1a'}" stroke-width="${on?2.5:1.5}"/><text x="${(L[s.id]||[1,0])[0]<0?x-rad-4:x+rad+4}" y="${y+4+(L[s.id]||[1,0])[1]}" text-anchor="${(L[s.id]||[1,0])[0]<0?'end':'start'}" font-size="12" fill="#f2efe8" stroke="#1d1c1a" stroke-width="3" paint-order="stroke" font-family="Archivo,sans-serif">${s.n.replace(' impact craters','').replace(' dune sea','').replace(' lava tube','').replace(' paleolake','')}${s.ap?' ≈':''}</text></g>`}
+  g+=`<g class="pt" data-id="${s.id}" style="cursor:pointer">${top?`<circle class="halo" cx="${x}" cy="${y}" r="${rad}" style="--r0:${rad}px" fill="none" stroke="#e2561d" stroke-width="2"/>`:''}<circle cx="${x}" cy="${y}" r="${rad}" fill="#e2561d" fill-opacity="${.35+v/160}" stroke="${on?'#fff':'#1d1c1a'}" stroke-width="${on?2.5:1.5}"/><text x="${(L[s.id]||[1,0])[0]<0?x-rad-4:x+rad+4}" y="${y+4+(L[s.id]||[1,0])[1]}" text-anchor="${(L[s.id]||[1,0])[0]<0?'end':'start'}" font-size="12" fill="#f2efe8" stroke="#1d1c1a" stroke-width="3" paint-order="stroke" font-family="Archivo,sans-serif">${s.n.replace(' impact craters','').replace(' dune sea','').replace(' lava tube','').replace(' paleolake','').replace('Harrat Nawasif–Al Buqum','Nawasif–Al Buqum')}${s.ap?' ≈':''}</text></g>`}
  $('map').innerHTML=`<svg viewBox="0 0 520 430" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46423d"/><stop offset="1" stop-color="#2c2926"/></linearGradient></defs><rect width="520" height="430" fill="#1d2326"/><polygon points="${pts}" fill="#000" opacity=".35" transform="translate(4,6)"/><polygon points="${pts}" fill="url(#lg)" stroke="#6b655d" stroke-width="1.2"/><text x="40" y="300" font-size="12" fill="#7d8a90" font-family="Archivo" transform="rotate(-58 40 300)">Red Sea</text><text x="420" y="${Y(26.8)}" font-size="12" fill="#7d8a90" font-family="Archivo">Gulf</text>${g}</svg>`;
  $('map').querySelectorAll('.pt').forEach(e=>e.addEventListener('click',()=>pick(e.dataset.id)));
 }
